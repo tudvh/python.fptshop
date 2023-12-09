@@ -35,6 +35,8 @@ def get_product_details(name_ascii):
 
 
 def add_products_to_db(products):
+    products.reverse()
+
     response = requests.post(api_url, data=json.dumps(products))
 
     try:
@@ -67,7 +69,5 @@ def crawl(phone_page, laptop_page, tablet_page):
 
             if product_detail:
                 list_product_details.append(product_detail)
-
-    list_product_details.reverse()
 
     return add_products_to_db(list_product_details)

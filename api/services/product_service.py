@@ -10,12 +10,12 @@ def get_all(name, category):
     try:
         conn_cursor = conn.cursor()
 
-        sql = "SELECT * FROM products WHERE (name LIKE %s OR category LIKE %s OR brand LIKE %s) ORDER BY id DESC"
+        sql = "SELECT * FROM products WHERE (name LIKE %s OR category LIKE %s OR brand LIKE %s) "
         params = (f'%{name}%', f'%{name}%', f'%{name}%')
-
         if category:
             sql += " AND category = %s"
             params += (category,)
+        sql += ' ORDER BY id DESC'
 
         conn_cursor.execute(sql, params)
         result = conn_cursor.fetchall()
