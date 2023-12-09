@@ -9,7 +9,7 @@ CREATE TABLE products (
     category varchar(50) NOT NULL,
     brand varchar(50) NOT NULL,
     price double NOT NULL,
-    images_url varchar(255) NOT NULL,
+    image_url varchar(255) NOT NULL,
     PRIMARY KEY(id)
 );
 

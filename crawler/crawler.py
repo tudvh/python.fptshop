@@ -6,7 +6,7 @@ from urllib.parse import quote
 headers = {
     'Accept': 'application/json',
 }
-api_url = 'http://api_service:9000/add-list'
+api_url = 'http://api_service:9000/products/add-list'
 
 
 def get_list_products(category_url):
@@ -27,7 +27,7 @@ def get_product_details(name_ascii):
             'category': product_detail['productType']['name'],
             'brand': product_detail['brand']['name'],
             'price': int(product_detail['productVariant']['price']),
-            'images_url': f"https://fptshop.com.vn/Uploads/Originals/{product_detail['productVariant']['listGallery'][0]['url']}",
+            'image_url': f"https://fptshop.com.vn/Uploads/Originals/{product_detail['productVariant']['listGallery'][0]['url']}",
         }
     except:
         print(f'Fail to get data {name_ascii}')
@@ -67,5 +67,7 @@ def crawl(phone_page, laptop_page, tablet_page):
 
             if product_detail:
                 list_product_details.append(product_detail)
+
+    list_product_details.reverse()
 
     return add_products_to_db(list_product_details)

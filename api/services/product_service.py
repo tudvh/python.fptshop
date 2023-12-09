@@ -10,7 +10,7 @@ def get_all(name, category):
     try:
         conn_cursor = conn.cursor()
 
-        sql = "SELECT * FROM products WHERE (name LIKE %s OR category LIKE %s OR brand LIKE %s)"
+        sql = "SELECT * FROM products WHERE (name LIKE %s OR category LIKE %s OR brand LIKE %s) ORDER BY id DESC"
         params = (f'%{name}%', f'%{name}%', f'%{name}%')
 
         if category:
@@ -27,7 +27,7 @@ def get_all(name, category):
             'category': x[3],
             'brand': x[4],
             'price': x[5],
-            'images_url': x[6],
+            'image_url': x[6],
         } for x in result]
 
         return {'type': 'success', 'data': products}
@@ -45,7 +45,7 @@ def get_all_product_slug(conn, conn_cursor):
         conn_cursor = conn.cursor()
 
     conn_cursor.execute("SELECT slug FROM products")
-    return conn_cursor.fetchall()
+    return [x[0] for x in conn_cursor.fetchall()]
 
 
 def add_list(products):
@@ -59,10 +59,9 @@ def add_list(products):
     try:
         conn_cursor = conn.cursor()
 
-        all_product_slug = [x[0]
-                            for x in get_all_product_slug(conn, conn_cursor)]
+        all_product_slug = get_all_product_slug(conn, conn_cursor)
 
-        sql = "INSERT INTO products (name, slug, category, brand, price, images_url) VALUES (%s, %s, %s, %s, %s, %s)"
+        sql = "INSERT INTO products (name, slug, category, brand, price, image_url) VALUES (%s, %s, %s, %s, %s, %s)"
         val = []
 
         for product in products:
@@ -70,7 +69,7 @@ def add_list(products):
 
             if product_slug not in all_product_slug:
                 val.append((product.name, product_slug, product.category,
-                            product.brand, product.price, product.images_url))
+                            product.brand, product.price, product.image_url))
 
         if val:
             conn_cursor.executemany(sql, val)
@@ -83,7 +82,7 @@ def add_list(products):
             conn.close()
 
 
-def add(name, category, brand, price, images_url):
+def add(name, category, brand, price, image_url):
     conn = connection.connect()
     if not conn:
         return {'type': 'error', 'message': 'Failed to connect to database'}
@@ -98,8 +97,8 @@ def add(name, category, brand, price, images_url):
         if product_slug in all_product_slug:
             return {'type': 'error', 'message': 'Product name is already exists'}
 
-        sql = f"INSERT INTO products (name, slug, category, brand, price, images_url) VALUES (%s, %s, %s, %s, %s, %s)"
-        val = (name, product_slug, category, brand, price, images_url)
+        sql = f"INSERT INTO products (name, slug, category, brand, price, image_url) VALUES (%s, %s, %s, %s, %s, %s)"
+        val = (name, product_slug, category, brand, price, image_url)
 
         conn_cursor.execute(sql, val)
         conn.commit()

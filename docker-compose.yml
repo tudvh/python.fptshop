@@ -5,13 +5,11 @@ services:
     build: ./web
     container_name: 8_web
     ports:
-      - "8888:8888"
+      - "8888:80"
     volumes:
       - ./web:/usr/share/nginx/html
-    links:
-      - api_service
-    depends_on:
-      - api_service
+    networks:
+      - 8_network
 
   crawler_service:
     build: ./crawler
@@ -20,20 +18,16 @@ services:
       - "8000:8000"
     volumes:
       - ./crawler:/api
-    links:
-      - api_service
-    depends_on:
-      - api_service
+    networks:
+      - 8_network
 
   api_service:
     build: ./api
     container_name: 8_api
     ports:
       - "9000:9000"
-    links:
-      - mysql_service
-    depends_on:
-      - mysql_service
+    networks:
+      - 8_network
 
   mysql_service:
     build: ./mysql
@@ -42,3 +36,9 @@ services:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: psw123
+    networks:
+      - 8_network
+
+networks:
+  8_network:
+    driver: bridge

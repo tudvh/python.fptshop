@@ -1,0 +1,40 @@
+.product-image {
+    width: 100px;
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 20;
+}
+
+.loading-overlay .loading-icon {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 4.5rem;
+}
+
+.loading-overlay .loading-icon i {
+    animation: spinner 0.7s linear infinite;
+}
+
+@keyframes spinner {
+    0% {
+        transform: rotate(0);
+    }
+    20% {
+        transform: rotate(150deg);
+    }
+    80% {
+        transform: rotate(210deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

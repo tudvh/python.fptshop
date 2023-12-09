@@ -1,8 +1,17 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import api
+from services import product_service, category_service
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class IProduct(BaseModel):
@@ -10,19 +19,28 @@ class IProduct(BaseModel):
     category: str
     brand: str
     price: int
-    images_url: str
+    image_url: str
 
 
-@app.get("/get-all")
-def get_all_func(name: str = '', category: str = ''):
-    return api.get_all(name, category)
+# Get all product
+@app.get("/products")
+def get_all_products_func(name: str = '', category: str = ''):
+    return product_service.get_all(name, category)
 
 
-@app.post("/add-list")
-def add_list_func(products: list[IProduct] = []):
-    return api.add_list(products)
+# Add list products
+@app.post("/products/add-list")
+def add_list_products_func(products: list[IProduct] = []):
+    return product_service.add_list(products)
 
 
-@app.post("/add")
-def add_func(name: str, category: str, brand: str, price: int, images_url: str):
-    return api.add(name, category, brand, price, images_url)
+# Add product
+@app.post("/products/add")
+def add_product_func(name: str, category: str, brand: str, price: int, image_url: str):
+    return product_service.add(name, category, brand, price, image_url)
+
+
+# Get list categories
+@app.get("/categories")
+def get_all_categories_func():
+    return category_service.get_all()
