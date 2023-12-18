@@ -6,8 +6,8 @@ SET time_zone = 'Asia/Ho_Chi_Minh';
 
 CREATE TABLE products (
     id int(11) NOT NULL AUTO_INCREMENT,
-    name varchar(100) NOT NULL,
-    slug varchar(100) NOT NULL,
+    name varchar(255) NOT NULL,
+    slug varchar(255) NOT NULL,
     category varchar(50) NOT NULL,
     brand varchar(50) NOT NULL,
     price double NOT NULL,
