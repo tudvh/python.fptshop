@@ -2,6 +2,8 @@ CREATE DATABASE 8_db;
 
 USE 8_db;
 
+SET time_zone = 'Asia/Ho_Chi_Minh';
+
 CREATE TABLE products (
     id int(11) NOT NULL AUTO_INCREMENT,
     name varchar(100) NOT NULL,
@@ -13,11 +15,33 @@ CREATE TABLE products (
     PRIMARY KEY(id)
 );
 
--- CREATE TABLE product_history_changes (
---     id int(11) NOT NULL AUTO_INCREMENT,
---     inserted int(11) NOT NULL DEFAULT 0,
---     updated int(11) NOT NULL DEFAULT 0,
---     deleted int(11) NOT NULL DEFAULT 0,
---     created_at datetime NOT NULL DEFAULT current_timestamp(),
---     PRIMARY KEY(id)
--- );
+CREATE TABLE product_audits (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  action enum('insert','update','delete') NOT NULL,
+  created_at datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY(id)
+);
+
+DELIMITER $$
+CREATE TRIGGER product_after_insert AFTER INSERT ON products FOR EACH ROW BEGIN
+   INSERT INTO product_audits
+   VALUES (null, 'insert', NOW());
+END
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER product_after_update AFTER UPDATE ON products FOR EACH ROW BEGIN
+   INSERT INTO product_audits
+   VALUES (null, 'update', NOW());
+END;
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER product_after_delete AFTER DELETE ON products FOR EACH ROW BEGIN
+   INSERT INTO product_audits
+   VALUES (null, 'delete', NOW());
+END
+$$
+DELIMITER ;

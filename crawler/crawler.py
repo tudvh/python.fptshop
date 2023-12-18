@@ -48,6 +48,8 @@ def add_products_to_db(products):
 
 
 def crawl(phone_page, laptop_page, tablet_page):
+    print('Starting crawl...')
+
     list_product_details = []
     list_category_urls = []
     if phone_page:
@@ -69,5 +71,7 @@ def crawl(phone_page, laptop_page, tablet_page):
 
             if product_detail:
                 list_product_details.append(product_detail)
+
+    print('End crawl...')
 
     return add_products_to_db(list_product_details)

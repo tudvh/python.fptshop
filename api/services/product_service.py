@@ -48,6 +48,40 @@ def get_all_product_slug(conn, conn_cursor):
     return [x[0] for x in conn_cursor.fetchall()]
 
 
+def get_history(date_start, date_end):
+    if date_start > date_end:
+        return {'type': 'error', 'message': 'date_start must be before date_end'}
+
+    conn = connection.connect()
+    if not conn:
+        return {'type': 'error', 'message': 'Failed to connect to database'}
+
+    try:
+        conn_cursor = conn.cursor()
+
+        sql = f"SELECT action, created_at, count(*) as 'quantity' \
+                FROM product_audits \
+                WHERE created_at between %s and %s \
+                GROUP BY created_at, action \
+                ORDER BY created_at DESC"
+        params = (date_start, date_end)
+
+        conn_cursor.execute(sql, params)
+        result = conn_cursor.fetchall()
+
+        histories = [{
+            'date_time': x[1],
+            'action': x[0],
+            'quantity': x[2]
+        } for x in result]
+
+        return {'type': 'success', 'data': histories}
+    finally:
+        if conn:
+            conn_cursor.close()
+            conn.close()
+
+
 def add_list(products):
     if not products:
         return {'type': 'error', 'message': 'No data'}
